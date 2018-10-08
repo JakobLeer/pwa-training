@@ -1,0 +1,70 @@
+{
+  "//": "Used by browser in e.g. splash screen",
+  "name": "PWA Instagram Clone",
+  "//": "Used by browser in e.g. home screen",
+  "short_name": "PWAGram",
+  "//": "This is where the app starts when opened from the home screen icon",
+  "//": "The icons to use for home screen. Supply a number of icons in various sizes.",
+  "icons": [
+    {
+      "src": "/src/images/icons/app-icon-48x48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/src/images/icons/app-icon-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/src/images/icons/app-icon-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "/src/images/icons/app-icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/src/images/icons/app-icon-256x256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "/src/images/icons/app-icon-384x384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "/src/images/icons/app-icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "//": "The part of the app that this manifest applies to. . (dot) means all files",
+  "scope": ".",
+  "//": "Display options e.g.to emulate native app. standalone | fullscreen | minimal-ui | browser",
+  "display": "standalone",
+  "//": "Used by browser in e.g. splash screen",
+  "background_color": "#fff",
+  "//": "Used by browser to set toolbar, app switcher",
+  "theme_color": "#3F51B5",
+  "//": "dDescription of the app",
+  "description": "This is the PWA course project, cloning Instagram and showcasing a number of PWA concepts",
+  "//": "Reading direction. ltr = left-to-right is default",
+  "dir": "ltr",
+  "//": "The default language of the app",
+  "lang": "da-DK",
+  "//": "Restriction of the app's orientation. Should only be set carefully. any | portrait | landscape",
+  "orientation": "portrait-primary",
+  "//": "A native app related to this",
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.example.app1",
+      "id": "com.example.app1"
+    }
+  ]
+}
