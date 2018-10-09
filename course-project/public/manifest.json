@@ -56,7 +56,7 @@
   "//": "Reading direction. ltr = left-to-right is default",
   "dir": "ltr",
   "//": "The default language of the app",
-  "lang": "da-DK",
+  "lang": "en-US",
   "//": "Restriction of the app's orientation. Should only be set carefully. any | portrait | landscape",
   "orientation": "portrait-primary",
   "//": "A native app related to this",

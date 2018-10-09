@@ -1,3 +1,4 @@
+
 var deferredPrompt;
 
 if (!window.Promise) {
@@ -9,6 +10,9 @@ if ('serviceWorker' in navigator) {
     .register('/sw.js')
     .then(function() {
       console.log('Service worker registered!');
+    })
+    .catch(function(err) {
+      console.log(err);
     });
 }
 
