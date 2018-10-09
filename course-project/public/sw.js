@@ -1,4 +1,4 @@
-var CACHE_STATIC_NAME = 'static-v7';
+var CACHE_STATIC_NAME = 'static-v8';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 
 self.addEventListener('install', function(event) {
@@ -10,6 +10,7 @@ self.addEventListener('install', function(event) {
         cache.addAll([
           '/',
           '/index.html',
+          '/offline.html',
           '/src/js/app.js',
           '/src/js/feed.js',
           '/src/js/promise.js',
@@ -42,6 +43,7 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim();
 });
 
+//=== Cache with network fallback
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
@@ -59,6 +61,29 @@ self.addEventListener('fetch', function(event) {
             });
         }
       })
-      .catch(function(err) {})
+      .catch(function(err) {
+        return caches.open(CACHE_STATIC_NAME)
+          .then(function(cache) {
+            return cache.match('/offline.html');
+          })
+      })
   );
 });
+
+//=== Network with cache fallback
+// If on spotty connection we could wait forever to get a response.
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//     fetch(event.request)
+//       .catch(function(error) {
+//         return caches.match(event.request);
+//       })
+//   );
+// });
+
+//=== Cache only strategy
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//     caches.match(event.request)
+//   );
+// });
