@@ -61,7 +61,6 @@ self.addEventListener('fetch', function(event) {
             });
         })
     );
-  // } else if (new RegExp('\\b' + STATIC_ASSETS.join('\\b|\\b') + '\\b').test(event.request.url)) {
   } else if (STATIC_ASSETS.some(function(asset) { event.request.url.indexOf(asset); })) {
       //=== Always get static assets from the cache
       event.respondWith(
@@ -88,7 +87,8 @@ self.addEventListener('fetch', function(event) {
         .catch(function(err) {
           return caches.open(CACHE_STATIC_NAME)
             .then(function(cache) {
-              if (event.request.url.indexOf('/help')) {
+              // if (event.request.url.indexOf('/help')) {
+              if (event.request.headers.get('accept').includes('text/html')) {
                 return cache.match('/offline.html');
               }
             })
