@@ -1,4 +1,4 @@
-var CACHE_STATIC_NAME = 'static-v8';
+var CACHE_STATIC_NAME = 'static-v12';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 
 self.addEventListener('install', function(event) {
@@ -43,32 +43,77 @@ self.addEventListener('activate', function(event) {
   return self.clients.claim();
 });
 
-//=== Cache with network fallback
+//=== Mixed cache then network and cache with network fallback
 self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request)
-      .then(function(cachedResponse) {
-        if (cachedResponse) {
-          return cachedResponse;
-        } else {
+  var url = 'https://httpbin.org/get';
+
+  if (event.request.url === url) {
+    //=== Do network cache the response
+    event.respondWith(
+      caches.open(CACHE_DYNAMIC_NAME)
+        .then(function(cache) {
           return fetch(event.request)
             .then(function(response) {
-              return caches.open(CACHE_DYNAMIC_NAME)
-                .then(function(cache) {
-                  cache.put(event.request.url, response.clone());
-                  return response;
-                })
+              console.log('[Service Worker] Updating the cache.');
+              cache.put(event.request.url, response.clone());
+              return response;
             });
-        }
-      })
-      .catch(function(err) {
-        return caches.open(CACHE_STATIC_NAME)
-          .then(function(cache) {
-            return cache.match('/offline.html');
-          })
-      })
-  );
+        })
+    );
+  } else {
+    //=== Cache with network fallback
+    event.respondWith(
+      caches.match(event.request)
+        .then(function(cachedResponse) {
+          if (cachedResponse) {
+            return cachedResponse;
+          } else {
+            return fetch(event.request)
+              .then(function(response) {
+                return caches.open(CACHE_DYNAMIC_NAME)
+                  .then(function(cache) {
+                    cache.put(event.request.url, response.clone());
+                    return response;
+                  })
+              });
+          }
+        })
+        .catch(function(err) {
+          return caches.open(CACHE_STATIC_NAME)
+            .then(function(cache) {
+              return cache.match('/offline.html');
+            })
+        })
+    );
+  }
 });
+
+//=== Cache with network fallback
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//     caches.match(event.request)
+//       .then(function(cachedResponse) {
+//         if (cachedResponse) {
+//           return cachedResponse;
+//         } else {
+//           return fetch(event.request)
+//             .then(function(response) {
+//               return caches.open(CACHE_DYNAMIC_NAME)
+//                 .then(function(cache) {
+//                   cache.put(event.request.url, response.clone());
+//                   return response;
+//                 })
+//             });
+//         }
+//       })
+//       .catch(function(err) {
+//         return caches.open(CACHE_STATIC_NAME)
+//           .then(function(cache) {
+//             return cache.match('/offline.html');
+//           })
+//       })
+//   );
+// });
 
 //=== Network with cache fallback
 // If on spotty connection we could wait forever to get a response.
