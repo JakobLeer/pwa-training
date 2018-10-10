@@ -70,7 +70,7 @@ self.addEventListener('fetch', function(event) {
           return fetch(event.request)
             .then(function(response) {
               console.log('[Service Worker] Updating the cache.');
-              trimCache(CACHE_DYNAMIC_NAME, 5);
+              // trimCache(CACHE_DYNAMIC_NAME, 5);
               cache.put(event.request.url, response.clone());
               return response;
             });
@@ -94,7 +94,7 @@ self.addEventListener('fetch', function(event) {
                 return caches.open(CACHE_DYNAMIC_NAME)
                   .then(function(cache) {
                     console.log('[Service Worker] Updating the cache.');
-                    trimCache(CACHE_DYNAMIC_NAME, 5);
+                    // trimCache(CACHE_DYNAMIC_NAME, 5);
                     cache.put(event.request.url, response.clone());
                     return response;
                   })
