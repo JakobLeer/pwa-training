@@ -3,6 +3,10 @@ var createPostArea = document.querySelector('#create-post');
 var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 var sharedMomentsArea = document.querySelector('#shared-moments');
 
+var form = document.querySelector('form');
+var titleInput = document.querySelector('#title');
+var locationInput = document.querySelector('#location');
+
 function openCreatePostModal() {
   createPostArea.style.display = 'block';
   if (deferredPrompt) {
@@ -103,3 +107,56 @@ if ('indexedDB' in window) {
       }
     });
 }
+
+function postData(data) {
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+    .then(function(res) {
+      console.log('POST directly', res);
+      updateUI();
+    });
+}
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  if (titleInput.value.trim() === '' || locationInput.value.trim() === '') {
+    alert('Please enter valid values.')
+    return;
+  }
+
+  closeCreatePostModal();
+
+  var post = {
+    id: new Date().toISOString(),
+    title: titleInput.value,
+    location: locationInput.value,
+    image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-jakob-leer.appspot.com/o/sf-boat.jpg?alt=media&token=94b0df98-4866-429e-98c0-6057b918d077'
+  };
+
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready
+      .then(function(sw) {
+        storeSync(post)
+          .then(function() {
+            return sw.sync.register('sync-new-post');
+          })
+          .then(function() {
+            var snackbarContainer = document.querySelector('#confirmation-toast');
+            var data = { message: 'Your post was saved for syncing!' };
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+          .catch(function(err) {
+            console.log('Trying to save post to sync', err);
+          });
+      });
+  } else {
+    postData(post);
+  }
+});

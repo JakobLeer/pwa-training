@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/db-utility.js');
 
-var CACHE_STATIC_NAME = 'static-v16';
+var CACHE_STATIC_NAME = 'static-v17';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_ASSETS = [
   '/',
@@ -113,6 +113,37 @@ self.addEventListener('fetch', function(event) {
                 return cache.match('/offline.html');
               }
             })
+        })
+    );
+  }
+});
+
+self.addEventListener('sync', function(event) {
+  console.log('[Service Worker] background syncing', event);
+  if (event.tag === 'sync-new-post') {
+    event.waitUntil(
+      readSyncs()
+        .then(function(syncs) {
+          syncs.forEach(function(sync) {
+            console.log('[Service Worker] syncing post', sync);
+            fetch('https://pwagram-jakob-leer.firebaseio.com/posts.json', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(sync)
+            })
+            .then(function(res) {
+              console.log('POST in background', res);
+              if (res.ok) {
+                deleteSync(sync.id);
+              }
+            })
+            .catch(function(err) {
+              console.log('Error POST\'ing', err);
+            });
+          });
         })
     );
   }
