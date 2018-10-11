@@ -1,4 +1,4 @@
-var CACHE_STATIC_NAME = 'static-v12';
+var CACHE_STATIC_NAME = 'static-v13';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_ASSETS = [
   '/',
@@ -60,7 +60,7 @@ self.addEventListener('activate', function(event) {
 
 //=== Mixed cache then network and cache with network fallback
 self.addEventListener('fetch', function(event) {
-  var url = 'https://httpbin.org/get';
+  var url = 'https://pwagram-jakob-leer.firebaseio.com/posts.json';
 
   if (event.request.url === url) {
     //=== Do network cache the response

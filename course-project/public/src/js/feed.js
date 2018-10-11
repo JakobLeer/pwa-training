@@ -48,22 +48,22 @@ function clearCards() {
   }
 }
 
-function createCard() {
+function createCard(data) {
   var cardWrapper = document.createElement('div');
   cardWrapper.className = 'shared-moment-card mdl-card mdl-shadow--2dp';
   var cardTitle = document.createElement('div');
   cardTitle.className = 'mdl-card__title';
-  cardTitle.style.backgroundImage = 'url("/src/images/sf-boat.jpg")';
+  cardTitle.style.backgroundImage = 'url(' + data.image + ')';
   cardTitle.style.backgroundSize = 'cover';
   cardTitle.style.height = '180px';
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement('h2');
   cardTitleTextElement.className = 'mdl-card__title-text';
-  cardTitleTextElement.textContent = 'San Francisco Trip';
+  cardTitleTextElement.textContent = data.title;
   cardTitle.appendChild(cardTitleTextElement);
   var cardSupportingText = document.createElement('div');
   cardSupportingText.className = 'mdl-card__supporting-text';
-  cardSupportingText.textContent = 'In San Francisco';
+  cardSupportingText.textContent = data.location;
   cardSupportingText.style.textAlign = 'center';
   // var cardSaveButton = document.createElement('button');
   // cardSaveButton.textContent = 'Save';
@@ -74,7 +74,13 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
-var url = 'https://httpbin.org/get';
+function updateUI(posts) {
+  clearCards();
+  var postsAsArray = Object.values(posts)
+  postsAsArray.forEach(function(post) { createCard(post); });
+}
+
+var url = 'https://pwagram-jakob-leer.firebaseio.com/posts.json';
 var networkDataRecived = false;
 
 // Get response from Network
@@ -82,11 +88,10 @@ fetch(url)
   .then(function(res) {
     return res.json();
   })
-  .then(function(data) {
+  .then(function(posts) {
     networkDataRecived = true;
-    console.log('From web', data);
-    clearCards();
-    createCard();
+    console.log('From web', posts);
+    updateUI(posts);
   });
 
 // Get response from Cache
@@ -97,10 +102,10 @@ if ('caches' in window) {
         return response.json();
       }
     })
-    .then(function(data) {
+    .then(function(posts) {
       if (!networkDataRecived) {
-        console.log('From cache', data);
-        createCard();
+        console.log('From cache', posts);
+        updateUI(posts);
       }
     })
 }
