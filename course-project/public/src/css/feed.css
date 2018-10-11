@@ -32,4 +32,9 @@
 
 .shared-moment-card.mdl-card {
   margin: 10px auto;
+  width: 270px;
+}
+
+@@media (min-width: 600px) {
+  width: 400px;
 }
