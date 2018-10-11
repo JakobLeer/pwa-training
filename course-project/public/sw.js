@@ -81,16 +81,23 @@ self.addEventListener('fetch', function(event) {
   if (event.request.url === url) {
     //=== Do network cache the response
     event.respondWith(
-      caches.open(CACHE_DYNAMIC_NAME)
-        .then(function(cache) {
-          return fetch(event.request)
-            .then(function(response) {
-              console.log('[Service Worker] Updating the cache.');
-              // trimCache(CACHE_DYNAMIC_NAME, 5);
-              cache.put(event.request.url, response.clone());
-              return response;
+      fetch(event.request)
+        .then(function(response) {
+          console.log('[Service Worker] Updating the indexed DB.');
+          response.clone().json()
+            .then(function(posts) {
+              dbPromise
+                .then(function(db) {
+                  var tx = db.transaction('posts', 'readwrite');
+                  var store = tx.objectStore('posts');
+                  Object.values(posts).forEach(function(post) {
+                    store.put(post);
+                  });
+                  return tx.complete;
+                });
             });
-        })
+          return response;
+      })
     );
   } else if (STATIC_ASSETS.some(function(asset) { event.request.url.indexOf(asset); })) {
       //=== Always get static assets from the cache
