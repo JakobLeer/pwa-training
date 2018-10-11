@@ -76,8 +76,7 @@ function createCard(data) {
 
 function updateUI(posts) {
   clearCards();
-  var postsAsArray = Object.values(posts)
-  postsAsArray.forEach(function(post) { createCard(post); });
+  posts.forEach(function(post) { createCard(post); });
 }
 
 var url = 'https://pwagram-jakob-leer.firebaseio.com/posts.json';
@@ -91,21 +90,16 @@ fetch(url)
   .then(function(posts) {
     networkDataRecived = true;
     console.log('From web', posts);
-    updateUI(posts);
+    updateUI(Object.values(posts));
   });
 
 // Get response from Cache
-if ('caches' in window) {
-  caches.match(url)
-    .then(function(response) {
-      if (response) {
-        return response.json();
-      }
-    })
-    .then(function(posts) {
+if ('indexedDB' in window) {
+  readPosts()
+    .then(function(postsFromDB) {
       if (!networkDataRecived) {
-        console.log('From cache', posts);
-        updateUI(posts);
+        console.log('From indexed DB', postsFromDB);
+        updateUI(postsFromDB);
       }
-    })
+    });
 }

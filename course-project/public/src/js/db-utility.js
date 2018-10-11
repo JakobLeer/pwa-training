@@ -25,3 +25,12 @@ function storePosts(posts) {
       return tx.complete;
     });
 }
+
+function readPosts() {
+  return dbPromise
+  .then(function(db) {
+    var tx = db.transaction(STORE, 'readonly');
+    var store = tx.objectStore(STORE);
+    return store.getAll();
+  });
+}
