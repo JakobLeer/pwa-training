@@ -1,4 +1,6 @@
-var CACHE_STATIC_NAME = 'static-v13';
+importScripts('/src/js/idb.js');
+
+var CACHE_STATIC_NAME = 'static-v14';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_ASSETS = [
   '/',
@@ -8,6 +10,7 @@ var STATIC_ASSETS = [
   '/src/js/feed.js',
   '/src/js/promise.js',
   '/src/js/fetch.js',
+  '/src/js/idb.js',
   '/src/js/material.min.js',
   '/src/css/app.css',
   '/src/css/feed.css',
@@ -16,6 +19,19 @@ var STATIC_ASSETS = [
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css'
 ];
+
+// idb.open
+// par1: name of database
+// par2: version
+// par3: on create callback
+var dbPromise = idb.open('posts-store', 1, function(db) {
+  if (!db.objectStoreNames.contains('posts')) {
+    // db.createObjectStore create an object store
+    // par1: name of object store
+    // par2: configuration object, e.g. keyPath sets the primary key of the stored object.
+    db.createObjectStore('posts', {keyPath: 'id'});
+  }
+});
 
 function trimCache(cacheName, maxItems) {
   caches.open(cacheName)
