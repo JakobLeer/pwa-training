@@ -35,3 +35,13 @@ function readPosts() {
     return store.getAll();
   });
 }
+
+function deletePost(id) {
+  return dbPromise
+    .then(function(db) {
+      var tx = db.transaction(STORE, 'readwrite');
+      var store = tx.objectStore(STORE);
+      store.delete(id);
+      return tx.complete;
+    });
+}
