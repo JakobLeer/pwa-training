@@ -19,6 +19,7 @@ function storePosts(posts) {
     .then(function(db) {
       var tx = db.transaction(STORE, 'readwrite');
       var store = tx.objectStore(STORE);
+      store.clear();
       Object.values(posts).forEach(function(post) {
         store.put(post);
       });
