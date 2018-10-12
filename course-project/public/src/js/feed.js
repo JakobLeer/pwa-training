@@ -109,7 +109,7 @@ if ('indexedDB' in window) {
 }
 
 function postData(data) {
-  fetch(url, {
+  fetch('https://us-central1-pwagram-jakob-leer.cloudfunctions.net/storePosts', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

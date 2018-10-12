@@ -1,7 +1,7 @@
 importScripts('/src/js/idb.js');
 importScripts('/src/js/db-utility.js');
 
-var CACHE_STATIC_NAME = 'static-v17';
+var CACHE_STATIC_NAME = 'static-v18';
 var CACHE_DYNAMIC_NAME = 'dynamic-v2';
 var STATIC_ASSETS = [
   '/',
@@ -126,7 +126,7 @@ self.addEventListener('sync', function(event) {
         .then(function(syncs) {
           syncs.forEach(function(sync) {
             console.log('[Service Worker] syncing post', sync);
-            fetch('https://pwagram-jakob-leer.firebaseio.com/posts.json', {
+            fetch('https://us-central1-pwagram-jakob-leer.cloudfunctions.net/storePosts', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -137,7 +137,11 @@ self.addEventListener('sync', function(event) {
             .then(function(res) {
               console.log('POST in background', res);
               if (res.ok) {
-                deleteSync(sync.id);
+                res.json()
+                  .then(data => {
+                    console.log('Removing from sync store: ', sync.id);
+                    deleteSync(sync.id);
+                  });
               }
             })
             .catch(function(err) {
