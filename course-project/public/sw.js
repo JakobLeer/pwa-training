@@ -153,6 +153,22 @@ self.addEventListener('sync', function(event) {
   }
 });
 
+self.addEventListener('notificationclick', function(event) {
+  const notification = event.notification;
+  const action = event.action;
+
+  console.log(notification);
+  console.log(action);
+
+  if (action === 'confirm') { // action is as configured in notification options
+    notification.close();
+  }
+});
+
+self.addEventListener('notificationclose', event => {
+  console.log('Notification was closed', event);
+});
+
 //=== Cache with network fallback
 // self.addEventListener('fetch', function(event) {
 //   event.respondWith(

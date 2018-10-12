@@ -27,7 +27,21 @@ const options = {
   icon: '/src/images/icons/app-icon-96x96.png',
   image: '/src/images/sf-boat.jpg',
   vibrate: [100, 50, 200],
-  badge: '/src/images/icons/app-icon-96x96.png'
+  badge: '/src/images/icons/app-icon-96x96.png', // Android icon in toolbar
+  tag: 'confirm-notification', // An ID, new instance replace old
+  renotify: true, // will new notification of same tag vibrate?
+  actions: [      // the buttons on your notification
+    {
+      action: 'confirm', // ID
+      title: 'Approve', // text
+      icon: '/src/images/icons/app-icon-48x48.png'
+    },
+    {
+      action: 'cancel', // ID
+      title: 'Ignore', // text
+      icon: '/src/images/icons/app-icon-48x48.png'
+    }
+  ]
 };
 
 function displayConfirmNotificationFromPage() {
