@@ -169,6 +169,29 @@ self.addEventListener('notificationclose', event => {
   console.log('Notification was closed', event);
 });
 
+self.addEventListener('push', event => {
+  console.log('[Service Worker] Push notification received.');
+
+  var pushPayload = {
+    title: 'New',
+    content: 'Something new happened'
+  };
+
+  if (event.data) {
+    pushPayload = JSON.parse(event.data.text());
+  }
+
+  const options = {
+    body: pushPayload.content,
+    icon: '/src/images/icons/app-icon-96x96.png',
+    badge: '/src/images/icons/app-icon-96x96.png'
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(pushPayload.title, options)
+  );
+});
+
 //=== Cache with network fallback
 // self.addEventListener('fetch', function(event) {
 //   event.respondWith(
